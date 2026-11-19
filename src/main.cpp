@@ -16,12 +16,14 @@
 
 char ssid[] = MY_SSID;                     // SSID and ...
 char pass[] = MY_PASS;                     // password for the WiFi network used
-
-int sensor0=5;
-int sensor1=13;
-int sensor2=12;
-int sensor3=14;
-int sensor4=16;
+ModbusClientTCPasync MB(ip, port);
+int sensorPins[]={
+  5,
+  13,
+  12,
+  14,
+  16};
+uint sensorAnzahl=sizeof(sensorPins)/sizeof(sensorPins[0]);
 // Define an onData handler function to receive the regular responses
 // Arguments are Modbus server ID, the function code requested, the message data and length of it, 
 // plus a user-supplied token to identify the causing request
@@ -47,12 +49,10 @@ void handleError(Error error, uint32_t token)
 
 // Setup() - initialization happens here
 void setup() {
-// Init Serial monitor
-  pinMode(sensor0, INPUT);
-  pinMode(sensor1, INPUT);
-  pinMode(sensor2, INPUT);
-  pinMode(sensor3, INPUT);   //
-  pinMode(sensor4, INPUT);
+  //Pindefinition des Sensor Arrays
+  for(uint i=0; i<sensorAnzahl;i++){
+    pinMode(sensorPins[i],INPUT);
+  };
   pinMode(LED_BUILTIN,OUTPUT);
   Serial.begin(115200);
   while (!Serial) {}
@@ -90,20 +90,21 @@ void loop() {
   static unsigned long lastMillis = 0;
   if (millis() - lastMillis > 5000) { //nach mindestens 5s die Sensoren einlesen und Nachricht an Modbus Client absetzen
     lastMillis = millis();
-    bool sensoren[]={ //Bool Array, digitalRead liefert aber int. Durch bedingung?resultat wenn wahr: resultat wenn falsch
-      digitalRead(sensor0)>0?true:false,
-      digitalRead(sensor1)>0?true:false,
-      digitalRead(sensor2)>0?true:false,
-      digitalRead(sensor3)>0?true:false,
-      digitalRead(sensor4)>0?true:false
-    };
+    bool sensorenZustand[sensorAnzahl];
+    for(uint i=0; i<sensorAnzahl;i++){
+      sensorenZustand[i]=digitalRead(sensorPins[i])>0?true:false;
+    }
     int modbusNachricht=0;
     //Zusammenbauen des Nachrichtenwertes durch Bitshifting, in der Wago sind die einzelnen Bits wie Eingänge auswertbar
-    for(int i = 0;i<sizeof(sensoren);i++){ //Sizeoff gibt die Arraylänge in bytes zurück (Bool ist 1 Byte)
-      modbusNachricht=(modbusNachricht<<1)+(sensoren[i]);
+    for(uint i = 0;i<sensorAnzahl;i++){ //Sizeoff gibt die Arraylänge in bytes zurück (Bool ist 1 Byte)
+      modbusNachricht=(modbusNachricht<<1)+(sensorenZustand[i]);
     }
     //Ausgabe des Arrays und anschließend der Nachricht zur Kontrolle
-    Serial.printf("%u:%u:%u:%u:%u\n",sensoren[0],sensoren[1],sensoren[2],sensoren[3],sensoren[4]);
+    Serial.println("------Sensoren Zustand------");
+    for(uint i = 0;i<sensorAnzahl;i++){
+      Serial.printf("%u ",sensorenZustand[i]);
+    }
+    Serial.println("\n------Modbus Nachricht------");
     Serial.println(modbusNachricht);
     Serial.printf("sending request with token %d\n", (uint32_t)lastMillis);
     Error err;
