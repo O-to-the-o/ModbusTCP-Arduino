@@ -1,12 +1,11 @@
-// =================================================================================================
-// eModbus: Copyright 2020 by Michael Harwerth, Bert Melis and the contributors to ModbusClient
-//               MIT license - see license.md for details
-// =================================================================================================
+/*
+  Absetzung von Sensoren über W-Lan mittels Modbus TCP Asynchron unter benutzung der eModbus-Libary
 
-// Example code to show the usage of the eModbus library. 
-// Please refer to root/Readme.md for a full description.
+  Grundlage ist das Beispiel https://github.com/eModbus/eModbus/blob/master/examples/TCP03async/main.cpp
 
-// Includes: <Arduino.h> for Serial etc., WiFi.h for WiFi support
+  ESP8266 Wmos D1 mini mit Sensor anschaltung über 300k Pullup und 1N4148 Kleinsignaldiode -> Erkannt wird wenn extern Masse anliegt oder nicht
+*/
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h> //Wichtig, die ESPWiFi Libary ist nicht Kompatibel mit dem ESP8266
 #include "credentials.h" //Beispiel in beispielWlan.h
