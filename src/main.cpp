@@ -74,7 +74,7 @@ void setup() {
     // Statische IP
   #endif
   if (!WiFi.config(local_IP, gateway, subnet)) {
-    Debug_printf("IP einstellung fehlgeschlagen");
+    Debug_printf("IP einstellung fehlgeschlagen\n");
   }
   // WLan verbindung aufbauen
   WiFi.begin(MY_SSID,MY_PASS);
@@ -103,7 +103,7 @@ void setup() {
 
 void loop() {
   static unsigned long lastMillis = 0;
-  if (millis() - lastMillis > 5000) { //nach mindestens 5s die Sensoren einlesen und Nachricht an Modbus Client absetzen
+  if (millis() - lastMillis > 2500) { //nach mindestens 1s die Sensoren einlesen und Nachricht an Modbus Client absetzen
     lastMillis = millis();
     bool sensorenZustand[sensorAnzahl]; //Array zum Speichern der Sensorzustände um evtl Zustandsänderungen innerhalb der Auswertung zu ignorieren
     for(uint i=0; i<sensorAnzahl;i++){
@@ -115,14 +115,14 @@ void loop() {
       modbusNachricht=(modbusNachricht<<1)+(sensorenZustand[i]);
     }
     //Ausgabe des Arrays und anschließend der Nachricht zur Kontrolle
-    Debug_printf("------Sensoren Zustand------");
+    Debug_printf("------Sensoren Zustand------\n");
     #ifdef DebugPrint
     for(uint i = 0;i<sensorAnzahl;i++){
       Serial.printf("%u ",sensorenZustand[i]);
     }
     #endif
-    Debug_printf("\n------Modbus Nachricht------");
-    Debug_printf("%u",modbusNachricht);
+    Debug_printf("\n------Modbus Nachricht------\n");
+    Debug_printf("%u\n",modbusNachricht);
     Debug_printf("sending request with token %d\n", (uint32_t)lastMillis);
     Error err;
     //1.Identifer für die Nachricht rein vom Nutzer Festgelegt, 2.Server ID, 3.Funktions ID, 4.Addresse, ....
