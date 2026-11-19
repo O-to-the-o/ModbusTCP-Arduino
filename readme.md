@@ -23,8 +23,8 @@ LED des ESP8266 zeigt an:
 * Leuchtet  -> Übertragungsfehler beim Modbus (ist der Modbus Client an ?)
 * Aus       -> Fehlerfreie Übertragung
 
-Wenn mehr, weniger oder andere Pins übertragne werden sollen ist das in 
-```cpp main.cpp
+Wenn mehr, weniger oder andere Pins übertragne werden sollen ist das in der main.cpp einzutragen.
+```cpp
 int sensorPins[]={
   5,
   13,
@@ -32,4 +32,3 @@ int sensorPins[]={
   14,
   16};
 ```
-  einzutragen.
