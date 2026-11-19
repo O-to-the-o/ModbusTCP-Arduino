@@ -8,6 +8,7 @@ Nutzung des ESP8266 da er vorhanden ist und genug Leistung mitbringt.
 [ESP8266 Datenblatt](https://documentation.espressif.com/0a-esp8266ex_datasheet_en.pdf)
 
 Laut datenblatt ist die maximale Eingangspannung für ein Low-Signal am ESP 8266=0,25*Vio => 0,25 * 3,3V =  825mV
+
 [Datenblatt Diode](https://cdn-reichelt.de/documents/datenblatt/A400/1N4148DO-35OLITECH.pdf)
 
 ![alt text](image.png) => Uf bei 0,1mA < 0,6V
