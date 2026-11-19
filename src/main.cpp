@@ -22,7 +22,7 @@
 #endif
 // Include the header for the ModbusClient TCP style
 #include <ModbusClientTCPasync.h> //Asynchron da ESP8266 genutzt wird
-int nachrichtenMindestAbstandMS = 2500;
+ulong nachrichtenMindestAbstandMS = 2500;  //ulong zum vergleich mit lastMills
 char ssid[] = MY_SSID;                     // SSID and ...
 char pass[] = MY_PASS;                     // password for the WiFi network used
 ModbusClientTCPasync MB(ip, port);         // SPS IP und Port 
@@ -47,9 +47,8 @@ void handleData(ModbusMessage response, uint32_t token)
     Debug_printf("%02X ", byte);
   }
   #endif
-  Debug_printf("");
+  Debug_printf(" ");
 }
-
 // Define an onError handler function to receive error responses
 // Arguments are the error code returned and a user-supplied token to identify the causing request
 void handleError(Error error, uint32_t token) 
