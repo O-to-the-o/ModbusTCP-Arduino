@@ -23,7 +23,9 @@ int sensorPins[]={
   12,
   14,
   16};
-uint sensorAnzahl=sizeof(sensorPins)/sizeof(sensorPins[0]);
+uint sensorAnzahl=sizeof(sensorPins)/sizeof(sensorPins[0]); //Berechnung der Array größe, sizeof gibt die rohröße des Elementes zurück -> Anzahl der Array-Elemente = Array Größe / Element Größe
+
+//Externe Methoden aus dem Libary beispiel
 // Define an onData handler function to receive the regular responses
 // Arguments are Modbus server ID, the function code requested, the message data and length of it, 
 // plus a user-supplied token to identify the causing request
@@ -47,7 +49,6 @@ void handleError(Error error, uint32_t token)
   Serial.printf("Error response: %02X - %s token: %d\n", (int)me, (const char *)me, token);
 }
 
-// Setup() - initialization happens here
 void setup() {
   //Pindefinition des Sensor Arrays
   for(uint i=0; i<sensorAnzahl;i++){
@@ -55,44 +56,42 @@ void setup() {
   };
   pinMode(LED_BUILTIN,OUTPUT);
   Serial.begin(115200);
-  while (!Serial) {}
-  Serial.println("__ OK __");
-// Connect to WiFi
-
-  // Configures static IP address
+  while (!Serial) {}  //warten bis Serial initalisierti ist
+    Serial.println("__ OK __");
+    // Statische IP
   if (!WiFi.config(local_IP, gateway, subnet)) {
-    Serial.println("STA Failed to configure");
+    Serial.println("IP einstellung fehlgeschlagen");
   }
+  // WLan verbindung aufbauen
   WiFi.begin(MY_SSID,MY_PASS);
-  while (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(LED_BUILTIN,!digitalRead(LED_BUILTIN));
+  while (WiFi.status() != WL_CONNECTED) { // Warten auf Verbindung
+    digitalWrite(LED_BUILTIN,!digitalRead(LED_BUILTIN));  //LED Blinken wenn Verbindung aufgebaut wird
     Serial.print(". ");
     delay(1000);
   }
-  WiFi.setAutoReconnect(true);
-  WiFi.persistent(true);
-  IPAddress wIP = WiFi.localIP();
+  WiFi.setAutoReconnect(true);  //Bei verbindungsverlust automatisch wieder verbinden
+  WiFi.persistent(true);        //Speichert Wifi im ESP Flash der nicht überschrieben wird
+  IPAddress wIP = WiFi.localIP(); //Eigene IP Speichern
   Serial.printf("WIFi IP address: %u.%u.%u.%u\n", wIP[0], wIP[1], wIP[2], wIP[3]);
-// Set up ModbusTCP client.
+//Aus externem Libary Beispiel
+  // Set up ModbusTCP client.
 // - provide onData handler function
-  MB.onDataHandler(&handleData);
+  MB.onDataHandler(&handleData);  //Wenn antwort ohne Fehler kommt rufe handleData auf
 // - provide onError handler function
-  MB.onErrorHandler(&handleError);
+  MB.onErrorHandler(&handleError);  // Bei fehler rufe handleError auf
 // Set message timeout to 2000ms and interval between requests to the same host to 200ms
-  MB.setTimeout(10000);
+  MB.setTimeout(10000);   
 // Start ModbusTCP background task
   MB.setIdleTimeout(60000);
 }
 
-// loop() - nothing done here today!
 void loop() {
-  //digitalWrite(LED_BUILTIN,1);
   static unsigned long lastMillis = 0;
   if (millis() - lastMillis > 5000) { //nach mindestens 5s die Sensoren einlesen und Nachricht an Modbus Client absetzen
     lastMillis = millis();
-    bool sensorenZustand[sensorAnzahl];
+    bool sensorenZustand[sensorAnzahl]; //Array zum Speichern der Sensorzustände um evtl Zustandsänderungen innerhalb der Auswertung zu ignorieren
     for(uint i=0; i<sensorAnzahl;i++){
-      sensorenZustand[i]=digitalRead(sensorPins[i])>0?true:false;
+      sensorenZustand[i]=digitalRead(sensorPins[i])>0?true:false; //DigitalRead gibt int zurück, implizite Konvertierung wird durch kondizionale Zuweisung abgefangen
     }
     int modbusNachricht=0;
     //Zusammenbauen des Nachrichtenwertes durch Bitshifting, in der Wago sind die einzelnen Bits wie Eingänge auswertbar
