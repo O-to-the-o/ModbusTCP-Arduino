@@ -11,7 +11,7 @@
 #include <ESP8266WiFi.h> //Wichtig, die ESPWiFi Libary ist nicht Kompatibel mit dem ESP8266
 #include "credentials.h" //Beispiel in beispielWlan.h
 
-//#define DebugPrint //Einkommentieren um Serielle Nachrichten auszugeben
+#define DebugPrint //Einkommentieren um Serielle Nachrichten auszugeben
 #ifdef   DebugPrint
   #define   Debug_begin(...)      Serial.begin(__VA_ARGS__)
   #define   Debug_printf(...)     Serial.printf(__VA_ARGS__)  
@@ -42,10 +42,12 @@ uint sensorAnzahl=sizeof(sensorPins)/sizeof(sensorPins[0]); //Berechnung der Arr
 void handleData(ModbusMessage response, uint32_t token) 
 {
   digitalWrite(LED_BUILTIN,1); //Led aus wenn kein Fehler vorlieg
+  #ifdef DebugPrint
   Debug_printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", response.getServerID(), response.getFunctionCode(), token, response.size());
   for (auto& byte : response) {
     Debug_printf("%02X ", byte);
   }
+  #endif
   Debug_printf("");
 }
 
@@ -83,7 +85,9 @@ void setup() {
   }
   WiFi.setAutoReconnect(true);  //Bei verbindungsverlust automatisch wieder verbinden
   WiFi.persistent(true);        //Speichert Wifi im ESP Flash der nicht überschrieben wird
+  #ifdef DebugPrint
   IPAddress wIP = WiFi.localIP(); //Eigene IP Speichern
+  #endif
   Debug_printf("WIFi IP address: %u.%u.%u.%u\n",wIP[0], wIP[1], wIP[2], wIP[3]);
   //Aus externem Libary Beispiel
   // Set up ModbusTCP client.
