@@ -24,12 +24,12 @@ LED des ESP8266 zeigt an:
 * Aus       -> Fehlerfreie Übertragung
 
 Wenn mehr, weniger oder andere Pins übertragne werden sollen ist das in 
-´´ḿain.cpp
+```cpp main.cpp
 int sensorPins[]={
   5,
   13,
   12,
   14,
   16};
-  ´´´
+```
   einzutragen.
