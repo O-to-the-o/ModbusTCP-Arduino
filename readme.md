@@ -16,3 +16,20 @@ Anschaltung der Sensoren über Kleinsignaldiode und 300k als Pullup, der Pullup 
 U-Low Max des MCU zu bleiben. 
 
 Da Uf<UviomM -> Sensoren lösen aus
+
+# Pin
+LED des ESP8266 zeigt an:
+* Blinken   -> Wlan wird verbunden
+* Leuchtet  -> Übertragungsfehler beim Modbus (ist der Modbus Client an ?)
+* Aus       -> Fehlerfreie Übertragung
+
+Wenn mehr, weniger oder andere Pins übertragne werden sollen ist das in 
+´´ḿain.cpp
+int sensorPins[]={
+  5,
+  13,
+  12,
+  14,
+  16};
+  ´´´
+  einzutragen.
