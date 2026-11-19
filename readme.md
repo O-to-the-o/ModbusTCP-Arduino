@@ -11,6 +11,7 @@ Laut datenblatt ist die maximale Eingangspannung für ein Low-Signal am ESP 8266
 [Datenblatt Diode](https://cdn-reichelt.de/documents/datenblatt/A400/1N4148DO-35OLITECH.pdf)
 
 ![alt text](image.png) => Uf bei 0,1mA < 0,6V
+
 Anschaltung der Sensoren über Kleinsignaldiode und 300k als Pullup, der Pullup muss groß gewählt werden um den Diodenstrom und damit die Diodenspannung zu senken um untern 
 U-Low Max des MCU zu bleiben. 
 
