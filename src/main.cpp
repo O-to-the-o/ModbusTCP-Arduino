@@ -23,7 +23,7 @@
 #endif
 // Include the header for the ModbusClient TCP style
 #include <ModbusClientTCPasync.h> //Asynchron da ESP8266 genutzt wird
-
+int nachrichtenMindestAbstandMS = 2500;
 char ssid[] = MY_SSID;                     // SSID and ...
 char pass[] = MY_PASS;                     // password for the WiFi network used
 ModbusClientTCPasync MB(ip, port);         // SPS IP und Port 
@@ -103,7 +103,7 @@ void setup() {
 
 void loop() {
   static unsigned long lastMillis = 0;
-  if (millis() - lastMillis > 2500) { //nach mindestens 1s die Sensoren einlesen und Nachricht an Modbus Client absetzen
+  if (millis() - lastMillis > nachrichtenMindestAbstandMS) { //nach mindestens 1s die Sensoren einlesen und Nachricht an Modbus Client absetzen
     lastMillis = millis();
     bool sensorenZustand[sensorAnzahl]; //Array zum Speichern der Sensorzustände um evtl Zustandsänderungen innerhalb der Auswertung zu ignorieren
     for(uint i=0; i<sensorAnzahl;i++){
