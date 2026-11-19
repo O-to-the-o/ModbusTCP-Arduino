@@ -9,6 +9,8 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h> //Wichtig, die ESPWiFi Libary ist nicht Kompatibel mit dem ESP8266
 #include "credentials.h" //Beispiel in beispielWlan.h
+// Include the header for the ModbusClient TCP style
+#include <ModbusClientTCPasync.h> //Asynchron da ESP8266 genutzt wird
 
 #define DebugPrint //Einkommentieren um Serielle Nachrichten auszugeben
 #ifdef   DebugPrint
@@ -20,9 +22,8 @@
   #define   Debug_printf(...)     
   #define   Debug_print(...)      
 #endif
-// Include the header for the ModbusClient TCP style
-#include <ModbusClientTCPasync.h> //Asynchron da ESP8266 genutzt wird
-ulong nachrichtenMindestAbstandMS = 2500;  //ulong zum vergleich mit lastMills
+
+ulong nachrichtenMindestAbstandMS = 2500;  //ulong zum vergleich mit lastMills 
 char ssid[] = MY_SSID;                     // SSID and ...
 char pass[] = MY_PASS;                     // password for the WiFi network used
 ModbusClientTCPasync MB(ip, port);         // SPS IP und Port 
