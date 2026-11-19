@@ -14,6 +14,4 @@ IPAddress local_IP(192, 168, 0, 94);        //Feslegen fester IP
 IPAddress gateway(192, 168, 0, 1);          
 IPAddress subnet(255, 255, 255, 0);         
 
-// Create a ModbusTCP client instance
-ModbusClientTCPasync MB(ip, port);
 */
