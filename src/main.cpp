@@ -27,13 +27,13 @@ ulong nachrichtenMindestAbstandMS = 2500;  //ulong zum vergleich mit lastMills
 char ssid[] = MY_SSID;                     // SSID and ...
 char pass[] = MY_PASS;                     // password for the WiFi network used
 ModbusClientTCPasync MB(ip, port);         // SPS IP und Port 
-int sensorPins[]={
-  -1,
+int sensorPins[]={ 
+  -1,//MSB
   5,
   13,
   12,
   14,
-  16};
+  16};//LSB
 uint sensorAnzahl=sizeof(sensorPins)/sizeof(sensorPins[0]); //Berechnung der Array größe, sizeof gibt die rohröße des Elementes zurück -> Anzahl der Array-Elemente = Array Größe / Element Größe
 bool letzterZustand;
 //Externe Methoden aus dem Libary beispiel
@@ -64,7 +64,7 @@ void handleError(Error error, uint32_t token)
 void setup() {
   //Pindefinition des Sensor Arrays
   for(uint i=0; i<sensorAnzahl;i++){
-    pinMode(sensorPins[i],INPUT);
+    if(sensorPins[i]>0)(sensorPins[i],INPUT);
   };
   pinMode(LED_BUILTIN,OUTPUT);
   Debug_begin(115200);
@@ -117,7 +117,7 @@ void loop() {
       modbusNachricht=(modbusNachricht<<1)+(sensorenZustand[i]);
     }
     //Ausgabe des Arrays und anschließend der Nachricht zur Kontrolle
-    Debug_printf("------Sensoren Zustand------\n");
+    Debug_printf("\n------Sensoren Zustand------\n");
     #ifdef DebugPrint
     for(uint i = 0;i<sensorAnzahl;i++){
       Serial.printf("%u ",sensorenZustand[i]);
@@ -126,6 +126,7 @@ void loop() {
     Debug_printf("\n------Modbus Nachricht------\n");
     Debug_printf("%u\n",modbusNachricht);
     Debug_printf("sending request with token %d\n", (uint32_t)lastMillis);
+    Debug_printf("Connection status: %d\n",WiFi.status());
     Error err;
     //1.Identifer für die Nachricht rein vom Nutzer Festgelegt, 2.Server ID, 3.Funktions ID, 4.Addresse, ....
     err = MB.addRequest((uint32_t)lastMillis, 1, WRITE_HOLD_REGISTER, 1,modbusNachricht);
