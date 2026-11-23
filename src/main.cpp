@@ -28,13 +28,14 @@ char ssid[] = MY_SSID;                     // SSID and ...
 char pass[] = MY_PASS;                     // password for the WiFi network used
 ModbusClientTCPasync MB(ip, port);         // SPS IP und Port 
 int sensorPins[]={
+  -1,
   5,
   13,
   12,
   14,
   16};
 uint sensorAnzahl=sizeof(sensorPins)/sizeof(sensorPins[0]); //Berechnung der Array größe, sizeof gibt die rohröße des Elementes zurück -> Anzahl der Array-Elemente = Array Größe / Element Größe
-
+bool letzterZustand;
 //Externe Methoden aus dem Libary beispiel
 // Define an onData handler function to receive the regular responses
 // Arguments are Modbus server ID, the function code requested, the message data and length of it, 
@@ -106,8 +107,10 @@ void loop() {
     lastMillis = millis();
     bool sensorenZustand[sensorAnzahl]; //Array zum Speichern der Sensorzustände um evtl Zustandsänderungen innerhalb der Auswertung zu ignorieren
     for(uint i=0; i<sensorAnzahl;i++){
-      sensorenZustand[i]=digitalRead(sensorPins[i])>0?true:false; //DigitalRead gibt int zurück, implizite Konvertierung wird durch kondizionale Zuweisung abgefangen
+      if(sensorPins[i]<0)sensorenZustand[i]=letzterZustand;
+      else sensorenZustand[i]=digitalRead(sensorPins[i])>0?true:false; //DigitalRead gibt int zurück, implizite Konvertierung wird durch kondizionale Zuweisung abgefangen
     }
+    letzterZustand= !letzterZustand;
     int modbusNachricht=0;
     //Zusammenbauen des Nachrichtenwertes durch Bitshifting, in der Wago sind die einzelnen Bits wie Eingänge auswertbar
     for(uint i = 0;i<sensorAnzahl;i++){ //Sizeoff gibt die Arraylänge in bytes zurück (Bool ist 1 Byte)
