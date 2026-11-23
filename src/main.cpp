@@ -64,7 +64,7 @@ void handleError(Error error, uint32_t token)
 void setup() {
   //Pindefinition des Sensor Arrays
   for(uint i=0; i<sensorAnzahl;i++){
-    if(sensorPins[i]>0)(sensorPins[i],INPUT);
+    if(sensorPins[i]>0)pinMode(sensorPins[i],INPUT);
   };
   pinMode(LED_BUILTIN,OUTPUT);
   Debug_begin(115200);
